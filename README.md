@@ -1,5 +1,5 @@
 # New_Visualizer_Skeleton
-This has everything required to start a new music-visualizer.
+This has everything required to start a new music-visualizer, and is designed for our hardware, whch is available for purchase on our Tindie store, at https://www.tindie.com/stores/diod_design/
 
 ESP-32 code for hosting a webpage control panel coming soon!
 
