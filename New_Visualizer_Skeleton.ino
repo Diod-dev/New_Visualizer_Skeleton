@@ -4,7 +4,7 @@
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 #include <Arduino.h>
-// These OCTOWS2811 library lines must be before #including FastLED
+// These OCTOWS2811 library lines must be before #include FastLED
 #define USE_OCTOWS2811
 #include <OctoWS2811.h>
 #include <FastLED.h>
@@ -25,8 +25,8 @@ double mult = 1.00;
 // NUM_LEDS is the total number of LEDs you have on 1 strip, if you're only using 1 LED output (1 LED strip/string)
 // ** If you're using multiple LED outputs, NUM_LEDS is not used when "LEDS.addLeds..." is called in setup() **
 // ** If you're using multiple LED outputs, use NUM_LEDS_PER_STRIP and NUM_STRIPS **
-#define NUM_LEDS 264
-#define NUM_LEDS_PER_STRIP 264
+#define NUM_LEDS 256
+#define NUM_LEDS_PER_STRIP 256
 // NUM_STRIPS controls how many of the OCTOWS2811 output pins will drive LEDs, in this order : 2, 14, 7, 8, 6, 20, 21, 5
 #define NUM_STRIPS 3
 
@@ -39,8 +39,8 @@ CRGB leds3[NUM_STRIPS * NUM_LEDS_PER_STRIP];
 // 'leds2' and 'leds3' are blended in to 'leds'. If there is a beat present in the music, 'leds' essentially equals 'leds3'. If not, 'leds' = 'leds2'
 
 // if LEDs are arranged as a matrix, put the number of rows in 'height' and number of columns in 'width'
-const int height = 12;
-const int width = 22;
+const int height = 16;
+const int width = 16;
 int coords[width][height];
 
 #include "DDGradients.h"
@@ -51,7 +51,7 @@ int patternMode = 1;
 int patternModeOld;
 int ambPattern;
 int MVPattern;
-int masterBrightness = 220;
+int masterBrightness = 5;
 
 #include "DDDrawing.h" // Must be above Animatinos
 #include "DDAnimations.h"
@@ -73,6 +73,7 @@ void setup()
 
 	Serial.begin(115200);
 	Serial1.begin(115200); // Used for ESP communication to the Teensy's RX1/TX1 pins
+	delay(100);
 
 	LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS); // Initalize LEDs if only 1 strip is used
 	//LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP); // Initialize LEDs if more than 1 strip is used
@@ -102,13 +103,32 @@ void loop()
 	// Music Analysis code
 	musicAnalytics();
 
-	// This is the function that makes it all work. When testing new patterns or functions, comment out normalOperation() and just put it here.
-	normalOperation();
+	// This is the function that makes it all work. When testing new patterns or functions, comment out normalOperation() and just put it below.
+	//normalOperation();
+
+	// Just display spectrum analyzer (not placed in leds2 or leds3 yet)
+	spectrumAnalyzer(true);
+
+	// Just display falling music (not placed in leds2 or leds3 yet)
+	//fallingMusic();
+
+	// Just display fullSparkles (in leds2, so use blend2(255) to copy it from leds2[] to leds[]
+	//fullSparkles();
+	//blend2(255);
+
+	// Just display circles to beat ()
+	//drawCircles();
+	//blend3(255);
+	
 
 	// * Diagnostic functions if you need to test something *
 	//printSpectrum(); // prints the whole spectrum. Useful to see if music is being input correctly.
 	//testingInputButtons(); // prints whether the buttons are pressed or not
+	//for (int i = 0; i < NUM_LEDS; i++) leds[i] = CHSV(0, 255, 100);
+	//Serial.println("working");
 
+	// This sets the maximum FPS to 120, which is plenty high. Without this, some minor code changes make the LEDs go haywire. Unsure why.
+	FastLED.setMaxRefreshRate(120);
 	// This actually writes LED data to LED strip. Without this line, the LEDs will not light up.
 	FastLED.show();
 }
@@ -159,7 +179,7 @@ void autoMusicVisualizing() {
 	//if (mixAmount == 255 && mixAmountOld != 255) changingHue = random8(2);
 	
 	// This is where the music-visualizing patterns are written to leds2 and leds3
-	// Or if ther is silence, populate leds with an ambient pattern
+	// Or if there is silence, populate leds with an ambient pattern
 
 	if (silence) {
 		ambientPatterns[currentAmbPatternNumber]();
@@ -182,7 +202,7 @@ void autoMusicVisualizing() {
 	// blends leds2 in to leds. If a beat is NOT present, mixAmount = 0, and leds = leds2.
 	blend2((mixAmount - 255) * -1);
 	//blend2(255);
-}
+} // end autoMusicVisualizing()
 
 // 1 music-visualizing pattern is chosen to be displayed over WiFi
 void staticMusicVizPattern() {
@@ -225,7 +245,7 @@ void mapXY() {
 				index++; // move to next LED
 			}
 			else { // If it's going towards the left...
-				coords[21 - j][i] = index;
+				coords[width - 1 - j][i] = index;
 				index++;
 			}
 		}

@@ -20,7 +20,8 @@ ambientPatternList ambientPatterns = {
 // Patterns for when there is no beat detected in the song
 typedef void(*musicWithNoBeatPatternsList[])();
 musicWithNoBeatPatternsList musicWithNoBeatPatterns = {
-	fullSparkles
+	fullSparkles,
+	fallingMusic
 };
 
 // Patterns for when a beat is detected in the low frequency
@@ -39,7 +40,8 @@ constBeatPatternList constBeatPatterns = {
 typedef void(*allPatternsList[])();
 allPatternsList allPatterns = {
 	drawCircles,
-	fullSparkles
+	fullSparkles,
+	fallingMusic
 };
 
 // Cycle to the next pattern in 'AllPatterns'

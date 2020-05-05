@@ -18,6 +18,7 @@ AudioControlSGTL5000 audioShield; //xy=446.1999969482422,317
 // These 2 lines hardcore an input mode, LINEIN (aux) or MIC. Only 1 can be uncommented.
 const int myInput = AUDIO_INPUT_LINEIN;
 //const int myInput = AUDIO_INPUT_MIC;
+//int myInput;
 
 // AUDIO DETECTION VARIABLES
 // Number of FFT bins we are populating
@@ -70,11 +71,20 @@ int mixAmount;
 void audioSetup() {
 	// TODO: add way for input to be chosen either by button or over WiFi somehow.
 	// Input can only be changed when Teensy is turned on / rebooted.
+  delay(2000);
 
-	if (myInput == AUDIO_INPUT_LINEIN)
-		Serial.println("Input is Aux");
-	if (myInput == AUDIO_INPUT_MIC)
-		Serial.println("input is mic");
+  // Must be holding both buttons to make it AUX input. This can be changed depending on what you want your default input to be.
+  //if (button1.pressed()) {
+    //delay(1000);
+    //if (button2.pressed()) {
+    //  myInput == AUDIO_INPUT_LINEIN;
+      //Serial.println("Input is Aux");
+    //}
+ // }
+  //else {
+    //  myInput = AUDIO_INPUT_MIC;
+      //Serial.println("Input is Mic");
+  //}
 
 	// AUDIO STUFF
 	AudioMemory(12);
@@ -88,7 +98,7 @@ void audioSetup() {
 
 // Clears the running mean and st dev. Used mostly between songs when silence is detected.
 void clearStats() {
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < numFFTBins; i++) {
 		freq[i].clear();
 		beatPeak[i] = 0;
 		binScore[i] = 0;
@@ -102,7 +112,7 @@ void detectSilence() {
 	uint8_t silenceCounter = 0;
 	// If FFT bin data is very low, consider it as silence in the bin
 	// reset the statistics because it's likely the song ended
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < numFFTBins; i++) {
 		if (spectrumValue[i] < 10) { // 10 is an arbitrary number but it means it is basically silent. Some audio sources have noise in higher FFT bins.
 			silenceCounter++;
 		}
@@ -130,7 +140,7 @@ void detectSilence() {
 
 void fillStats() {
 	// Save old FFT data in spectrumValueOld
-	for (int i = 0; i < 14; i++)
+	for (int i = 0; i < numFFTBins; i++)
 		spectrumValueOld[i] = spectrumValue[i];
 
 	//Serial.println(mult);
@@ -252,7 +262,7 @@ void musicAnalytics() {
 
 	maxConstBeat = 0; // reset this before it is set within beatTiming().
 	// All the deep analytics happen from the functions in this for loop
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < numFFTBins; i++) {
 		beatDetection(i);
 		beatTiming(i);
 		//printDetectedBeats(i); // diagnostic function, uncomment to see if beats are being detected.
@@ -262,7 +272,8 @@ void musicAnalytics() {
 		if (spectrumValue[i] > average[i])
 			fadeVals[i] += (spectrumValue[i] - average[i]) / 2;
 		else
-			fadeVals[i] -= (average[i] - spectrumValue[i]) / 2;
+			//fadeVals[i] -= (average[i] - spectrumValue[i]) / 2;
+			fadeVals[i] -= 5;
 
 		fadeVals[i] = constrain(fadeVals[i], 0, 255);
 	}

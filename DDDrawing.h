@@ -46,6 +46,9 @@ void propagateCircle(CHSV color, double x, double y, double r, int thickness) {
 	static int sdx, edx;
 	static int sdy, edy;
 
+	// This dx/dy stuff is not necessary for small arrays, but for a 3D cube with hundreds more LEDs to light, it can make
+	// a huge difference in efficiency if the for loops go through unnecessary loops, so the beginning and ending points of 
+	// the for loops are calculated based off of the radius being input, not just 0 to width, and 0 to height.
 	// check to make sure it's contained in bounds of LEDs
 	sdx = 0; // start of x values
 	edx = width; // end of x values (10 is a place holder)
