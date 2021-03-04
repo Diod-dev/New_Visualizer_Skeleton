@@ -1,5 +1,5 @@
 # New_Visualizer_Skeleton
-This repository has everything required to start a new music-visualizer project, and is designed for our hardware, whch is available for purchase on our Tindie store, at https://www.tindie.com/stores/diod_design/. You don't need our hardware though, as long as you follow the schematic included here.
+This repository has everything required to start a new music-visualizer project, and is designed for our hardware, whch is available for purchase on our Tindie store, at https://www.tindie.com/stores/diod_design/. You don't really need our hardware though. Visit pjrc.com, learn how to stack the audio adapter on top of the Teensy, learn how to input audio through either aux or mic, and then look up their OCTOWS2811 library to see which pins to connect to LED strips and how.
 
 This project is set up for a 16x16 LED matrix
 
