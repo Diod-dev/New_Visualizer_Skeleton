@@ -20,68 +20,68 @@ bool newCommand = false;
 int audioMultiplier; // temp input variable before recording this input in variable 'mult'
 
 void doThingsWithCommands() {
-  
+
   char tempChars[3];
-  
+
   char command = receivedChars[0];
   for (int i = 0; i < 3; i++) { // Record the next 3 characters (numbers) to a holding string 'tempChars'
-      tempChars[i] = receivedChars[i + 1];
+    tempChars[i] = receivedChars[i + 1];
   }
   int commandValue = atoi(tempChars); // convert 'tempChars' to integer.
   Serial.printf("New command [%c] value[%i]\n", command, commandValue);
 
-  switch(command) {
+  switch (command) {
     case 'a': // Chooses an ambient pattern and displays it
-  		ambPattern = commandValue;
-  		patternMode = 3; // Used in normalOperation()
-  		Serial.println(ambPattern);
-  	  break;
-      
-  	case 'b':  // Sets the brightness when displaying a solid color
-  		patternMode = 4; // Used in normalOperation() to display a solid color
-  		solidVal = commandValue;
+      ambPattern = commandValue;
+      patternMode = 3; // Used in normalOperation()
+      Serial.println(ambPattern);
       break;
-      
-  	case 'f': // The off button is set, last pattern mode is saved.
-  		patternModeOld = patternMode;
-  		patternMode = 0; // Used in normalOperation() to turn all LEDs off
+
+    case 'b':  // Sets the brightness when displaying a solid color
+      patternMode = 4; // Used in normalOperation() to display a solid color
+      solidVal = commandValue;
       break;
-      
-  	case 'm': // Chooses a music-visualizing pattern and displays it
-  		MVPattern = commandValue;
-  		patternMode = 2; // Used in normalOperation() to display a single music-visualizing pattern
-  		Serial.println(patternMode);
+
+    case 'f': // The off button is set, last pattern mode is saved.
+      patternModeOld = patternMode;
+      patternMode = 0; // Used in normalOperation() to turn all LEDs off
       break;
-      
-  	case 'o':
-  		Serial.println(patternModeOld);
-  		patternMode = patternModeOld; // Used in normalOperation(), returns to last patternMode
+
+    case 'm': // Chooses a music-visualizing pattern and displays it
+      MVPattern = commandValue;
+      patternMode = 2; // Used in normalOperation() to display a single music-visualizing pattern
+      Serial.println(patternMode);
       break;
-      
-  	case 's':
-  		patternMode = 4; // Used in normalOperation() to display a solid color
-  		solidHue = commandValue;
+
+    case 'o':
+      Serial.println(patternModeOld);
+      patternMode = patternModeOld; // Used in normalOperation(), returns to last patternMode
       break;
-      
-  	case 't':
-  		patternMode = 4; // Used in normalOperation() to display a solid color
-  		solidSat = commandValue;
+
+    case 's':
+      patternMode = 4; // Used in normalOperation() to display a solid color
+      solidHue = commandValue;
       break;
-      
-  	case 'x':
-  		patternMode = 1; // Used in normalOperation() to enter mode of changing music-visualization patterns to the music
+
+    case 't':
+      patternMode = 4; // Used in normalOperation() to display a solid color
+      solidSat = commandValue;
       break;
-      
-  	case 'y':
-  		audioMultiplier = commandValue;
-  		mult = (double)audioMultiplier / 100;
+
+    case 'x':
+      patternMode = 1; // Used in normalOperation() to enter mode of changing music-visualization patterns to the music
       break;
-      
-  	case 'z':
-  		masterBrightness = commandValue;
+
+    case 'y':
+      audioMultiplier = commandValue;
+      mult = (double)audioMultiplier / 100;
       break;
-      
-  	default:
+
+    case 'z':
+      masterBrightness = commandValue;
+      break;
+
+    default:
       Serial.printf("Unknown input %c\n", command);
       break;
   }
