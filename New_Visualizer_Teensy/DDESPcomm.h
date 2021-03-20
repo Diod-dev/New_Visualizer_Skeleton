@@ -9,7 +9,6 @@ uint8_t solidVal = 255;
 
 const byte numChars = 10;
 char receivedChars[10];
-char tempChars[3];
 
 // TODO: use 'categories' instead of letters. 
 // variables to hold parsed data
@@ -21,11 +20,15 @@ bool newCommand = false;
 int audioMultiplier; // temp input variable before recording this input in variable 'mult'
 
 void doThingsWithCommands() {
+  
+  char tempChars[3];
+  
   char command = receivedChars[0];
   for (int i = 0; i < 3; i++) { // Record the next 3 characters (numbers) to a holding string 'tempChars'
       tempChars[i] = receivedChars[i + 1];
   }
   int commandValue = atoi(tempChars); // convert 'tempChars' to integer.
+  Serial.printf("New command [%c] value[%i]\n", command, commandValue);
 
   switch(command) {
     case 'a': // Chooses an ambient pattern and displays it
