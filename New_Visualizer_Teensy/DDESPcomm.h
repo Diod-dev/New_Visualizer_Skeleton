@@ -25,21 +25,23 @@ void doThingsWithCommands() {
   for (int i = 0; i < 3; i++) { // Record the next 3 characters (numbers) to a holding string 'tempChars'
       tempChars[i] = receivedChars[i + 1];
   }
+  int commandValue = atoi(tempChars); // convert 'tempChars' to integer.
+  
   if (command == 'a') { // Chooses an ambient pattern and displays it
-		ambPattern = atoi(tempChars); // convert 'tempChars' to integer.
+		ambPattern = commandValue;
 		patternMode = 3; // Used in normalOperation()
 		Serial.println(ambPattern);
 	}
 	else if (command == 'b') {  // Sets the brightness when displaying a solid color
 		patternMode = 4; // Used in normalOperation() to display a solid color
-		solidVal = atoi(tempChars); // 'atoi' converts string of characters to integer
+		solidVal = commandValue;
 	}
 	else if (command == 'f') { // The off button is set, last pattern mode is saved.
 		patternModeOld = patternMode;
 		patternMode = 0; // Used in normalOperation() to turn all LEDs off
 	}
 	else if (command == 'm') { // Chooses a music-visualizing pattern and displays it
-		MVPattern = atoi(tempChars);
+		MVPattern = commandValue;
 		patternMode = 2; // Used in normalOperation() to display a single music-visualizing pattern
 		Serial.println(patternMode);
 	}
@@ -49,21 +51,21 @@ void doThingsWithCommands() {
 	}
 	else if (command == 's') {
 		patternMode = 4; // Used in normalOperation() to display a solid color
-		solidHue = atoi(tempChars); 
+		solidHue = commandValue;
 	}
 	else if (command == 't') {
 		patternMode = 4; // Used in normalOperation() to display a solid color
-		solidSat = atoi(tempChars);
+		solidSat = commandValue;
 	}
 	else if (command == 'x') {
 		patternMode = 1; // Used in normalOperation() to enter mode of changing music-visualization patterns to the music
 	}
 	else if (command == 'y') {
-		audioMultiplier = atoi(tempChars);
+		audioMultiplier = commandValue;
 		mult = (double)audioMultiplier / 100;
 	}
 	else if (command == 'z') {
-		masterBrightness = atoi(tempChars);
+		masterBrightness = commandValue;
 	}
 	else {}
 }
