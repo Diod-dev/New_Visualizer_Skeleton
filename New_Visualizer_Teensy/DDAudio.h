@@ -1,6 +1,11 @@
 // DDAudio.h
 // This file contains all of the music-analytics (FFT, beat detection, beat timing, silence detection)
 
+#if!defined(ESP32)
+// ***********************
+// Audio setup for Teensy
+// ***********************
+
 // PJRC's audio library
 #include <Audio.h>
 
@@ -19,6 +24,33 @@ AudioControlSGTL5000 audioShield; //xy=446.1999969482422,317
 const int myInput = AUDIO_INPUT_LINEIN;
 //const int myInput = AUDIO_INPUT_MIC;
 //int myInput;
+
+
+#else
+// ***********************
+// Audio setup for ESP32
+// ***********************
+
+#include <elapsedMillis.h>  // https://github.com/pfeerick/elapsedMillis
+
+#include <arduinoFFT.h>     // https://github.com/kosme/arduinoFFT
+// Taken from : https://github.com/s-marley/ESP32_FFT_VU/blob/master/ESP32_FFT_VU/ESP32_FFT_VU.ino
+
+#define SAMPLES         1024          // Must be a power of 2
+#define SAMPLING_FREQ   40000         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
+#define AMPLITUDE       1000          // Depending on your audio source level, you may need to alter this value. Can be used as a 'sensitivity' control.
+#define AUDIO_IN_PIN    35            // Signal in on this pin
+#define NUM_BANDS       16            // To change this, you will need to change the bunch of if statements describing the mapping from bins to bands
+#define NOISE           500           // Used as a crude noise filter, values below this are ignored
+
+// Sampling and FFT stuff
+unsigned int sampling_period_us;
+double vReal[SAMPLES];
+double vImag[SAMPLES];
+unsigned long newTime;
+arduinoFFT FFT = arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ);
+
+#endif
 
 // AUDIO DETECTION VARIABLES
 // Number of FFT bins we are populating
@@ -73,6 +105,7 @@ void audioSetup() {
 	// Input can only be changed when Teensy is turned on / rebooted.
   delay(2000);
 
+#if!defined(ESP32)
   // Must be holding both buttons to make it AUX input. This can be changed depending on what you want your default input to be.
   //if (button1.pressed()) {
     //delay(1000);
@@ -94,6 +127,7 @@ void audioSetup() {
 	// configure the mixer to equally add left & right
 	mixer1.gain(0, 0.5);
 	mixer1.gain(1, 0.5);
+#endif
 }
 
 // Clears the running mean and st dev. Used mostly between songs when silence is detected.
@@ -142,7 +176,7 @@ void fillStats() {
 	// Save old FFT data in spectrumValueOld
 	for (int i = 0; i < numFFTBins; i++)
 		spectrumValueOld[i] = spectrumValue[i];
-
+#if!defined(ESP32)
 	//Serial.println(mult);
 	spectrumValue[0] = mult * fft1024.read(0) * 1000; // multiply by 1000 to make them integers
 	spectrumValue[1] = mult * fft1024.read(1) * 1000;
@@ -160,7 +194,50 @@ void fillStats() {
 	spectrumValue[13] = mult * fft1024.read(185, 257) * 1000;
 	spectrumValue[14] = mult * fft1024.read(258, 359) * 1000;
 	spectrumValue[15] = mult * fft1024.read(360, 511) * 1000;
+#else
+  // Reset bandValues[]
+  for (int i = 0; i<NUM_BANDS; i++){
+    spectrumValue[i] = 0;
+  }
 
+  // Sample the audio pin
+  for (int i = 0; i < SAMPLES; i++) {
+    newTime = micros();
+    vReal[i] = analogRead(AUDIO_IN_PIN); // A conversion takes about 9.7uS on an ESP32
+    vImag[i] = 0;
+    while ((micros() - newTime) < sampling_period_us) { /* chill */ }
+  }
+
+  // Compute FFT
+  FFT.DCRemoval();
+  FFT.Windowing(FFT_WIN_TYP_HAMMING, FFT_FORWARD);
+  FFT.Compute(FFT_FORWARD);
+  FFT.ComplexToMagnitude();
+
+  // Analyse FFT results
+  for (int i = 2; i < (SAMPLES/2); i++){       // Don't use sample 0 and only first SAMPLES/2 are usable. Each array element represents a frequency bin and its value the amplitude.
+    if (vReal[i] > NOISE) {                    // Add a crude noise filter
+
+    //16 bands, 12kHz top band
+      if (i<=2 )           spectrumValue[0]  += (int)vReal[i] * 1000;
+      if (i>2   && i<=3  ) spectrumValue[1]  += (int)vReal[i] * 1000;
+      if (i>3   && i<=5  ) spectrumValue[2]  += (int)vReal[i] * 1000;
+      if (i>5   && i<=7  ) spectrumValue[3]  += (int)vReal[i] * 1000;
+      if (i>7   && i<=9  ) spectrumValue[4]  += (int)vReal[i] * 1000;
+      if (i>9   && i<=13 ) spectrumValue[5]  += (int)vReal[i] * 1000;
+      if (i>13  && i<=18 ) spectrumValue[6]  += (int)vReal[i] * 1000;
+      if (i>18  && i<=25 ) spectrumValue[7]  += (int)vReal[i] * 1000;
+      if (i>25  && i<=36 ) spectrumValue[8]  += (int)vReal[i] * 1000;
+      if (i>36  && i<=50 ) spectrumValue[9]  += (int)vReal[i] * 1000;
+      if (i>50  && i<=69 ) spectrumValue[10] += (int)vReal[i] * 1000;
+      if (i>69  && i<=97 ) spectrumValue[11] += (int)vReal[i] * 1000;
+      if (i>97  && i<=135) spectrumValue[12] += (int)vReal[i] * 1000;
+      if (i>135 && i<=189) spectrumValue[13] += (int)vReal[i] * 1000;
+      if (i>189 && i<=264) spectrumValue[14] += (int)vReal[i] * 1000;
+      if (i>264          ) spectrumValue[15] += (int)vReal[i] * 1000;
+    }
+  }
+#endif
 	// reset volume variable
 	volume = 0;
 	// Update the average and standard deviation of each FFT bin value
@@ -342,6 +419,7 @@ void printNumber(float n) {
 }
 
 void printSpectrum() {
+#if!defined(ESP32)
   ////// UNCOMMENT THEse LINES TO PRINT THE FFT WHILE PLAYING A SONG
 	if (fft1024.available()) {
 		// each time new FFT data is available
@@ -365,6 +443,7 @@ void printSpectrum() {
 		printNumber(fft1024.read(360, 511) * 1000);
 		Serial.println();
 	}
+#endif
 }
 
 // Used for diagnostics / watching whether a song is having beats detected
