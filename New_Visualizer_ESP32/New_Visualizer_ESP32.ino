@@ -72,7 +72,8 @@ void setup() {
 		Serial.println("An Error has occurred while mounting SPIFFS");
 		return;
 	}
- 
+
+   Serial.println("Running wifi setup");
 	// CONNECTING TO EXISTING WIFI NETWORK
 	// Connect to Wi-Fi 
 //	WiFi.begin(ssid, password); // connect to existing WiFi
@@ -205,6 +206,8 @@ void setup() {
 
 	// Start server
 	server.begin();
+
+  Serial.printf("\n\nSetup Complete\n");
 }
 
 void loop() {
@@ -217,6 +220,7 @@ int updateCurrentBrightness() {
 }
 
 void sendRequest(int req) {
+  Serial.printf("sendRequest(%i)\n", req);
 	switch (req) {
 	case 0:
 		currentMode = req;
@@ -263,75 +267,11 @@ void sendRequest(int req) {
 		}
 		Serial2.write('>');
 		break;
-	case 5:
+	case 5 ... 16:
 		currentMode = req;
 		sendMVMode(req);
 		break;
-	case 6:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 7:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 8:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 9:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 10:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 11:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 12:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 13:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 14:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 15:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 16:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 17:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 18:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 19:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 20:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 21:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 22:
+	case 17 ... 22:
 		currentMode = req;
 		sendAmbMode(req);
 		break;
@@ -365,6 +305,7 @@ void sendRequest(int req) {
 }
 
 void sendMVMode(int req) {
+  Serial.printf("sendMVMode(%i)\n", req);
 	currentMode = req;
 	Serial2.write('<');
 	Serial2.write('m');
@@ -377,6 +318,7 @@ void sendMVMode(int req) {
 }
 
 void sendAmbMode(int req) {
+  Serial.printf("sendAmbMode(%i)\n", req);
 	currentMode = req;
 	Serial2.write('<');
 	Serial2.write('a');
