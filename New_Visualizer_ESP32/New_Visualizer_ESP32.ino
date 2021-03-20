@@ -224,82 +224,40 @@ void sendRequest(int req) {
 	switch (req) {
 	case 0:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('f');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('f', 0);
 		break;
 	case 1:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('o');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('o', 0);
 		break;
 	case 2:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('s');
-		for (int i = 0; i < inputHue.length(); i++) {
-			Serial2.write(inputHue[i]);
-		}
-		Serial2.write('>');
+    sendCommand('s', inputHue.toInt());
 		break;
 	case 3:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('t');
-		for (int i = 0; i < inputSat.length(); i++) {
-			Serial2.write(inputSat[i]);
-		}
-		Serial2.write('>');
+    sendCommand('t', inputSat.toInt());
 		break;
 	case 4:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('b');
-		for (int i = 0; i < inputVal.length(); i++) {
-			Serial2.write(inputVal[i]);
-		}
-		Serial2.write('>');
+    sendCommand('t', inputVal.toInt());
 		break;
 	case 5 ... 16:
-		currentMode = req;
 		sendMVMode(req);
 		break;
 	case 17 ... 22:
-		currentMode = req;
 		sendAmbMode(req);
 		break;
 	case 23:
 		//currentMode = req;
-		Serial2.write('<');
-		Serial2.write('z');
-		for (int i = 0; i < inputMasterBrightness.length(); i++) {
-			Serial2.write(inputMasterBrightness[i]);
-		}
-		Serial2.write('>');
+    sendCommand('z', inputMasterBrightness.toInt());
 		break;
 	case 98:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('x');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('x', 0);
 		break;
 	case 99:
-		Serial2.write('<');
-		Serial2.write('y');
-		for (int i = 0; i < inputAudioMultiplier.length(); i++) {
-			Serial2.write(inputAudioMultiplier[i]);
-		}
-		Serial2.write('>');
+    sendCommand('y', inputAudioMultiplier.toInt());
 		break;
 	}
 }
@@ -307,25 +265,18 @@ void sendRequest(int req) {
 void sendMVMode(int req) {
   Serial.printf("sendMVMode(%i)\n", req);
 	currentMode = req;
-	Serial2.write('<');
-	Serial2.write('m');
 	sendMode = currentMode - 4;
-	sendModeStr = (String)sendMode;
-	for (int i = 0; i < sendModeStr.length(); i++) {
-		Serial2.write(sendModeStr[i]);
-	}
-	Serial2.write('>');
+	sendCommand('m', sendMode);
 }
 
 void sendAmbMode(int req) {
   Serial.printf("sendAmbMode(%i)\n", req);
 	currentMode = req;
-	Serial2.write('<');
-	Serial2.write('a');
 	sendMode = currentMode - 16;
-	sendModeStr = (String)sendMode;
-	for (int i = 0; i < sendModeStr.length(); i++) {
-		Serial2.write(sendModeStr[i]);
-	}
-	Serial2.write('>');
+  sendCommand('a', sendMode);
+}
+
+void sendCommand(char command, int value) {
+  Serial.printf("<%c%03d>\n", command, value);  
+  Serial2.printf("<%c%03d>\n", command, value);  
 }
