@@ -21,56 +21,57 @@ bool newCommand = false;
 int audioMultiplier; // temp input variable before recording this input in variable 'mult'
 
 void doThingsWithCommands() {
-	if (receivedChars[0] == 'a') { // Chooses an ambient pattern and displays it
+  char command = receivedChars[0];
+	if (command == 'a') { // Chooses an ambient pattern and displays it
 		for (int i = 0; i < 3; i++) // Record the next 3 characters (numbers) to a holding string 'tempChars'
 			tempChars[i] = receivedChars[i + 1];
 		ambPattern = atoi(tempChars); // convert 'tempChars' to integer.
 		patternMode = 3; // Used in normalOperation()
 		Serial.println(ambPattern);
 	}
-	else if (receivedChars[0] == 'b') {  // Sets the brightness when displaying a solid color
+	else if (command == 'b') {  // Sets the brightness when displaying a solid color
 		patternMode = 4; // Used in normalOperation() to display a solid color
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		solidVal = atoi(tempChars); // 'atoi' converts string of characters to integer
 	}
-	else if (receivedChars[0] == 'f') { // The off button is set, last pattern mode is saved.
+	else if (command == 'f') { // The off button is set, last pattern mode is saved.
 		patternModeOld = patternMode;
 		patternMode = 0; // Used in normalOperation() to turn all LEDs off
 	}
-	else if (receivedChars[0] == 'm') { // Chooses a music-visualizing pattern and displays it
+	else if (command == 'm') { // Chooses a music-visualizing pattern and displays it
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		MVPattern = atoi(tempChars);
 		patternMode = 2; // Used in normalOperation() to display a single music-visualizing pattern
 		Serial.println(patternMode);
 	}
-	if (receivedChars[0] == 'o') {
+	if (command == 'o') {
 		Serial.println(patternModeOld);
 		patternMode = patternModeOld; // Used in normalOperation(), returns to last patternMode
 	}
-	else if (receivedChars[0] == 's') {
+	else if (command == 's') {
 		patternMode = 4; // Used in normalOperation() to display a solid color
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		solidHue = atoi(tempChars); 
 	}
-	else if (receivedChars[0] == 't') {
+	else if (command == 't') {
 		patternMode = 4; // Used in normalOperation() to display a solid color
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		solidSat = atoi(tempChars);
 	}
-	else if (receivedChars[0] == 'x') {
+	else if (command == 'x') {
 		patternMode = 1; // Used in normalOperation() to enter mode of changing music-visualization patterns to the music
 	}
-	else if (receivedChars[0] == 'y') {
+	else if (command == 'y') {
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		audioMultiplier = atoi(tempChars);
 		mult = (double)audioMultiplier / 100;
 	}
-	else if (receivedChars[0] == 'z') {
+	else if (command == 'z') {
 		for (int i = 0; i < 3; i++)
 			tempChars[i] = receivedChars[i + 1];
 		masterBrightness = atoi(tempChars);
