@@ -190,77 +190,16 @@ void setup() {
 		sendRequest(98);
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
-	server.on("/mvpat1", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(5);
+	server.on("/mvpat", HTTP_GET, [](AsyncWebServerRequest *request) {
+    int pattern = request->getParam("pattern")->value().toInt();
+		sendRequest((4 + pattern));
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
-	server.on("/mvpat2", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(6);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat3", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(7);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat4", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(8);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat5", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(9);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat6", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(10);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat7", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(11);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat8", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(12);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat9", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(13);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat10", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(14);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat11", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(15);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat12", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(16);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
+ 
 	// AMBIENT PATTERN BUTTONS
-	server.on("/ambpat1", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(17);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat2", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(18);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat3", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(19);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat4", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(20);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat5", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(21);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat6", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(22);
+	server.on("/ambpat", HTTP_GET, [](AsyncWebServerRequest *request) {
+    int pattern = request->getParam("pattern")->value().toInt();
+		sendRequest((16 + pattern));
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
 
