@@ -72,7 +72,8 @@ void setup() {
 		Serial.println("An Error has occurred while mounting SPIFFS");
 		return;
 	}
- 
+
+   Serial.println("Running wifi setup");
 	// CONNECTING TO EXISTING WIFI NETWORK
 	// Connect to Wi-Fi 
 //	WiFi.begin(ssid, password); // connect to existing WiFi
@@ -190,82 +191,23 @@ void setup() {
 		sendRequest(98);
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
-	server.on("/mvpat1", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(5);
+	server.on("/mvpat", HTTP_GET, [](AsyncWebServerRequest *request) {
+    int pattern = request->getParam("pattern")->value().toInt();
+		sendRequest((4 + pattern));
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
-	server.on("/mvpat2", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(6);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat3", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(7);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat4", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(8);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat5", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(9);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat6", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(10);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat7", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(11);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat8", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(12);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat9", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(13);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat10", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(14);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat11", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(15);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/mvpat12", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(16);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
+ 
 	// AMBIENT PATTERN BUTTONS
-	server.on("/ambpat1", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(17);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat2", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(18);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat3", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(19);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat4", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(20);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat5", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(21);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-	server.on("/ambpat6", HTTP_GET, [](AsyncWebServerRequest *request) {
-		sendRequest(22);
+	server.on("/ambpat", HTTP_GET, [](AsyncWebServerRequest *request) {
+    int pattern = request->getParam("pattern")->value().toInt();
+		sendRequest((16 + pattern));
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
 
 	// Start server
 	server.begin();
+
+  Serial.printf("\n\nSetup Complete\n");
 }
 
 void loop() {
@@ -278,173 +220,63 @@ int updateCurrentBrightness() {
 }
 
 void sendRequest(int req) {
+  Serial.printf("sendRequest(%i)\n", req);
 	switch (req) {
 	case 0:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('f');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('f', 0);
 		break;
 	case 1:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('o');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('o', 0);
 		break;
 	case 2:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('s');
-		for (int i = 0; i < inputHue.length(); i++) {
-			Serial2.write(inputHue[i]);
-		}
-		Serial2.write('>');
+    sendCommand('s', inputHue.toInt());
 		break;
 	case 3:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('t');
-		for (int i = 0; i < inputSat.length(); i++) {
-			Serial2.write(inputSat[i]);
-		}
-		Serial2.write('>');
+    sendCommand('t', inputSat.toInt());
 		break;
 	case 4:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('b');
-		for (int i = 0; i < inputVal.length(); i++) {
-			Serial2.write(inputVal[i]);
-		}
-		Serial2.write('>');
+    sendCommand('t', inputVal.toInt());
 		break;
-	case 5:
-		currentMode = req;
+	case 5 ... 16:
 		sendMVMode(req);
 		break;
-	case 6:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 7:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 8:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 9:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 10:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 11:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 12:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 13:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 14:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 15:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 16:
-		currentMode = req;
-		sendMVMode(req);
-		break;
-	case 17:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 18:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 19:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 20:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 21:
-		currentMode = req;
-		sendAmbMode(req);
-		break;
-	case 22:
-		currentMode = req;
+	case 17 ... 22:
 		sendAmbMode(req);
 		break;
 	case 23:
 		//currentMode = req;
-		Serial2.write('<');
-		Serial2.write('z');
-		for (int i = 0; i < inputMasterBrightness.length(); i++) {
-			Serial2.write(inputMasterBrightness[i]);
-		}
-		Serial2.write('>');
+    sendCommand('z', inputMasterBrightness.toInt());
 		break;
 	case 98:
 		currentMode = req;
-		Serial2.write('<');
-		Serial2.write('x');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('0');
-		Serial2.write('>');
+    sendCommand('x', 0);
 		break;
 	case 99:
-		Serial2.write('<');
-		Serial2.write('y');
-		for (int i = 0; i < inputAudioMultiplier.length(); i++) {
-			Serial2.write(inputAudioMultiplier[i]);
-		}
-		Serial2.write('>');
+    sendCommand('y', inputAudioMultiplier.toInt());
 		break;
 	}
 }
 
 void sendMVMode(int req) {
+  Serial.printf("sendMVMode(%i)\n", req);
 	currentMode = req;
-	Serial2.write('<');
-	Serial2.write('m');
 	sendMode = currentMode - 4;
-	sendModeStr = (String)sendMode;
-	for (int i = 0; i < sendModeStr.length(); i++) {
-		Serial2.write(sendModeStr[i]);
-	}
-	Serial2.write('>');
+	sendCommand('m', sendMode);
 }
 
 void sendAmbMode(int req) {
+  Serial.printf("sendAmbMode(%i)\n", req);
 	currentMode = req;
-	Serial2.write('<');
-	Serial2.write('a');
 	sendMode = currentMode - 16;
-	sendModeStr = (String)sendMode;
-	for (int i = 0; i < sendModeStr.length(); i++) {
-		Serial2.write(sendModeStr[i]);
-	}
-	Serial2.write('>');
+  sendCommand('a', sendMode);
+}
+
+void sendCommand(char command, int value) {
+  Serial.printf("<%c%03d>\n", command, value);  
+  Serial2.printf("<%c%03d>\n", command, value);  
 }
