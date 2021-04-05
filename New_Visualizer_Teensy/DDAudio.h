@@ -16,9 +16,9 @@ AudioControlSGTL5000 audioShield; //xy=446.1999969482422,317
 // GUItool: end automatically generated code
 
 // These 2 lines hardcore an input mode, LINEIN (aux) or MIC. Only 1 can be uncommented.
-const int myInput = AUDIO_INPUT_LINEIN;
+//const int myInput = AUDIO_INPUT_LINEIN;
 //const int myInput = AUDIO_INPUT_MIC;
-//int myInput;
+int myInput;
 
 // AUDIO DETECTION VARIABLES
 // Number of FFT bins we are populating
@@ -74,17 +74,17 @@ void audioSetup() {
   delay(2000);
 
   // Must be holding both buttons to make it AUX input. This can be changed depending on what you want your default input to be.
-  //if (button1.pressed()) {
-    //delay(1000);
-    //if (button2.pressed()) {
-    //  myInput == AUDIO_INPUT_LINEIN;
-      //Serial.println("Input is Aux");
-    //}
- // }
-  //else {
-    //  myInput = AUDIO_INPUT_MIC;
-      //Serial.println("Input is Mic");
-  //}
+  if (button1.pressed()) {
+    delay(1000);
+    if (button2.pressed()) {
+      myInput = AUDIO_INPUT_LINEIN;
+      Serial.println("Input is Aux");
+    }
+  }
+  else {
+      myInput = AUDIO_INPUT_MIC;
+      Serial.println("Input is Mic");
+  }
 
 	// AUDIO STUFF
 	AudioMemory(12);

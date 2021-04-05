@@ -20,27 +20,31 @@ ambientPatternList ambientPatterns = {
 // Patterns for when there is no beat detected in the song
 typedef void(*musicWithNoBeatPatternsList[])();
 musicWithNoBeatPatternsList musicWithNoBeatPatterns = {
-	fullSparkles,
-	fallingMusic
+  sparkles,
+  spectrumAnalyzer,
+  fallingMusic
 };
 
 // Patterns for when a beat is detected in the low frequency
 typedef void(*lowBeatPatternList[])();
 lowBeatPatternList lowBeatPatterns = {
-	drawCircles
+	fireworks,
+  sweeps
 };
 
 // Patterns for when a constant beat is detected
 typedef void(*constBeatPatternList[])();
 constBeatPatternList constBeatPatterns = {
-	drawCircles
+	fireworks,
 };
 
 // A list of all the patterns
 typedef void(*allPatternsList[])();
 allPatternsList allPatterns = {
-	drawCircles,
-	fullSparkles,
+	fireworks,
+  sweeps,
+	sparkles,
+  spectrumAnalyzer,
 	fallingMusic
 };
 
@@ -61,16 +65,16 @@ void nextMusicWithConstBeatPattern() {
 
 void nextMusicWithNoBeatPattern() {
 	// add one to the current pattern number, and wrap around at the end
-	//musicWithNoBeatPatternNumber = (musicWithNoBeatPatternNumber + 1) % ARRAY_SIZE(musicWithNoBeatPatterns);
-	musicWithNoBeatPatternNumber = random8(ARRAY_SIZE(musicWithNoBeatPatterns));
+	musicWithNoBeatPatternNumber = (musicWithNoBeatPatternNumber + 1) % ARRAY_SIZE(musicWithNoBeatPatterns);
+	//musicWithNoBeatPatternNumber = random8(ARRAY_SIZE(musicWithNoBeatPatterns));
 }
 
 void nextAmbPattern() {
-	//currentAmbPatternNumber = (currentAmbPatternNumber + 1) % ARRAY_SIZE(ambientPatterns);
-	currentAmbPatternNumber = random8(ARRAY_SIZE(ambientPatterns));
+	currentAmbPatternNumber = (currentAmbPatternNumber + 1) % ARRAY_SIZE(ambientPatterns);
+	//currentAmbPatternNumber = random8(ARRAY_SIZE(ambientPatterns));
 }
 
 void nextLowBeatPattern() {
-	//currentLowBeatPatternNumber = (currentLowBeatPatternNumber + 1) % ARRAY_SIZE(lowBeatPatterns);
-	currentLowBeatPatternNumber = random8(ARRAY_SIZE(lowBeatPatterns));
+	currentLowBeatPatternNumber = (currentLowBeatPatternNumber + 1) % ARRAY_SIZE(lowBeatPatterns);
+	//currentLowBeatPatternNumber = random8(ARRAY_SIZE(lowBeatPatterns));
 }
