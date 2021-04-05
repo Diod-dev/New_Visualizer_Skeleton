@@ -13,7 +13,7 @@ void sparkles() {
       leds2[ random8() ] = CHSV(i * 10, 255, 255);
   }
 
-  // The fade value is 
+  // Fade
 	fadeAll2(250);
 }
 
@@ -71,21 +71,21 @@ void fallingMusic() {
   }
 
   // This is where all the lights are moved down
-	// Every 50 milliseconds...
-	EVERY_N_MILLIS(50) { // this slows the speed at which the lights fall
+  // Every 50 milliseconds...
+  EVERY_N_MILLIS(50) { // this slows the speed at which the lights fall
     // For every row on the matrix...  (except the top one)
-		for (int i = 0; i < height - 1; i++) {
+    for (int i = 0; i < height - 1; i++) {
       // Go across each column...
-			for (int j = 0; j < width; j++) {
+      for (int j = 0; j < width; j++) {
         // Save the LED color from (x, y+1) to (x,y). This moves the color downwards
-				leds2[coords[j][i]] = leds2[coords[j][i + 1]]; // set the LED equal to the one above it
-			}
-		}
-   // Every time we move the LEDs down, fade the colors on the top row.
-   for (int i = 0; i < width; i++)
-     // Apply the .nscale8() fade from fadeAll() to just the top row
-     leds2[coords[i][height - 1]].nscale8(170); 
-	}
+        leds2[coords[j][i]] = leds2[coords[j][i + 1]]; // set the LED equal to the one above it
+      }
+    }
+    // Every time we move the LEDs down, fade the colors on the top row.
+    for (int i = 0; i < width; i++)
+      // Apply the .nscale8() fade from fadeAll() to just the top row
+      leds2[coords[i][height - 1]].nscale8(170); 
+  }
 }
 
 //// This code works when the matrix is a square
@@ -98,27 +98,27 @@ void spectrumAnalyzer() {
 
   // This is where all the bar lengths are calculated and set
   // For all the FFT bins (numFFTBins = 16, which happens to be the number of columns on the 16x16 matrix)
-	for (int i = 0; i < numFFTBins; i++) {
+  for (int i = 0; i < numFFTBins; i++) {
     // Calculate the bar's height by mapping that FFTbin's value to the matrix, while constraining it to keep it in bounds
-		int tempBarLength = constrain(map(spectrumValue[i] - 50, 0, 600, 0, height - 2), 0, height - 2);
+    int tempBarLength = constrain(map(spectrumValue[i] - 50, 0, 600, 0, height - 2), 0, height - 2);
     // If the bar length just calculated is higher than the one currently drawn on the matrix...
     if (tempBarLength > barLength[i]) {
       // Save the new bar length to the column
       barLength[i] = tempBarLength;
       // If the new bar length is taller than the dot...
       if (barLength[i] > topDot[i])
-         // move the dot to 1 higher than the new bar length
-         topDot[i] = barLength[i] + 1;
+        // move the dot to 1 higher than the new bar length
+        topDot[i] = barLength[i] + 1;
     }
-	}
+  }
 
   // This is where the bar lengths decreases
   // Every N milliseconds...
   EVERY_N_MILLIS(100) {
     // Go through all the bar lengths and...
-		for (int i = 0; i < numFFTBins; i++) {
+    for (int i = 0; i < numFFTBins; i++) {
       // If they're greater than 1...
-			if (barLength[i] > 1)
+      if (barLength[i] > 1)
         // Decrement them
 				barLength[i]--;
 		}
@@ -134,7 +134,7 @@ void spectrumAnalyzer() {
 	}
 
   // This is where the bars are drawn to the LEDs
-	// For all the columns of the matrix...
+  // For all the columns of the matrix...
 	for (int i = 0; i < width; i++) {
     // On each column, for as tall as the bar is...
 		for (int j = 0; j < barLength[i]; j++) {
@@ -152,7 +152,7 @@ void spectrumAnalyzer() {
 void sweeps() {
   static int locations[10];
   static int index;
-// Initializing the location of the sweeps
+  // Initializing the location of the sweeps
   if (beatDetected[lowBeatBin] == 2) {
     locations[index] = 0;
     index++;

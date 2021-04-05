@@ -224,7 +224,7 @@ void staticMusicVizPattern() {
     fallingMusic();
     blend2(255);
     break;
-	}
+  }
 }
 
 // 1 ambient pattern is chosen to be displayed over WiFi

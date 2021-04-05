@@ -3,21 +3,20 @@
 // TODO: add more common drawing functions
 
 void drawCircle(double centerX, double centerY, int hue, double thickness, double radii) {
-    if (radii < 16) {
-      // for all the rows...
-      for (int i = 0; i < width; i++) {
-        // for all the columns...
-        for (int j = 0; j < height; j++) {
-            // Find the distance between the led at (i,j) and the point (centerX, centerY)
-            int dist = sqrt( pow(i - centerX, 2) + pow(j - centerY, 2) );
-            // if the distance we just calculated is within a certain range (thickness)...
-            if (dist > radii - thickness/2 && dist < radii + thickness/2)
-               // Apply color to this LED
-               leds3[ coords[i][j] ] += CHSV(radii*10, 255, 255);
-            
-         }
-       }
+  if (radii < 16) {
+    // for all the rows...
+    for (int i = 0; i < width; i++) {
+      // for all the columns...
+      for (int j = 0; j < height; j++) {
+        // Find the distance between the led at (i,j) and the point (centerX, centerY)
+        int dist = sqrt( pow(i - centerX, 2) + pow(j - centerY, 2) );
+        // if the distance we just calculated is within a certain range (thickness)...
+        if (dist > radii - thickness/2 && dist < radii + thickness/2)
+          // Apply color to this LED
+          leds3[ coords[i][j] ] += CHSV(radii*10, 255, 255);
+      }
     }
+  }
 }
 
 // Blends leds2 in to leds in a certain amount. If mixAmount = 255, leds = leds2. If mixAmount = 0, none of leds2 will be in leds
